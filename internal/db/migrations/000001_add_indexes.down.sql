@@ -1,0 +1,7 @@
+BEGIN;
+
+DROP TABLE IF EXISTS company_logs;
+DROP TABLE IF EXISTS companies;
+DROP TABLE IF EXISTS categories;
+
+COMMIT;

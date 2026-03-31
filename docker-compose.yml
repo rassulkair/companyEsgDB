@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16
+    container_name: company-esg-postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: goDB
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d goDB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: company-esg-app
+    restart: always
+    ports:
+      - "6061:6061"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: qwerty
+      DB_NAME: goDB
+      APP_PORT: 6061
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
